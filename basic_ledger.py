@@ -6,12 +6,13 @@ import sys
 
 class Expense:
     def __init__(self, expense_date, expense_title, expense_place,
-                 expense_amount, expense_approach):
+                 expense_amount, expense_approach, expense_remark = ' '):
         self.date = expense_date
         self.title = expense_title
         self.place = expense_place
         self.amount = expense_amount
         self.approach = expense_approach
+        self.remark = expense_remark
     def description(self):
         system.separation_line_2()
         print("Expense Description")
@@ -37,20 +38,35 @@ class Ledger:
     def append_expense(self, new_expense):
         self.list_expense.append(new_expense)
         self.num_expense += 1
-    def write_to_csv(self, name_outf):
-        with open(name_outf, mode='w') as ledger:
-            ledger_writer = csv.writer(ledger, delimiter=',', quotechar='"',
+    def write_to_csv(self, name_csv):
+        # write the info in the Ledger object into a .csv file
+        with open(name_csv, mode='w') as ledger_csv:
+            ledger_writer = csv.writer(ledger_csv, delimiter=',', quotechar='"',
                                        quoting=csv.QUOTE_MINIMAL)
             ledger_writer.writerow(['expense_id','Date','Title','Place',
-                                    'Amount','Approach'])
+                                    'Amount','Approach','Remark'])
             for single_expense in self.list_expense:
                 ledger_writer.writerow([self.list_expense.index(single_expense)+1,
                                         single_expense.date,
                                         single_expense.title,
                                         single_expense.place,
                                         single_expense.amount,
-                                        single_expense.approach])
-    # def read_from_csv(list_obj):
+                                        single_expense.approach,
+                                        single_expense.remark])
+    def read_from_csv(self, name_csv):
+        # read the info in a .csv file into a Ledger object
+        with open(name_csv, mode='r') as ledger_csv:
+            ledger_reader = csv.reader(ledger_csv, delimiter=',')
+            line_count = 0
+            for row in ledger_reader:
+                if line_count == 0:
+                    line_count += 1
+                else:
+                    self.num_expense += 1
+                    date, title, place = row[1], row[2], row[3]
+                    amount, approach, remark = row[4], row[5], row[6]
+                    self.append_expense(Expense(date, title, place, amount, approach, remark))
+                    line_count += 1
 
 class User:
     def __init__(self):
@@ -83,7 +99,6 @@ class User:
         #this_week.description()
         this_week.write_to_csv()
         '''
-
         system.separation_line_2()
         print("Enter info of the expense:")
         input_date = input("Date:")
@@ -91,6 +106,7 @@ class User:
         input_place = input("Place:")
         input_amount = input("Amount:")
         input_approach = input("Approach:")
+        input_remark = input("Remark:")
 
         loop_flag = 1
         while(loop_flag):
@@ -102,15 +118,23 @@ class User:
             op = input()
             if op == '1':
                 # create a new .csv file and write the expense & ledger
-                ledger_title = input("Enter the title for the ledger:")
-                name_outf = ledger_title + ".csv"
+                ledger_title = input("Enter the title for the ledger to create:")
+                name_csv = ledger_title + ".csv"
                 new_ledger = Ledger(ledger_title)
                 new_ledger.append_expense(Expense(input_date, input_title,
-                        input_place, input_amount, input_approach))
-                new_ledger.write_to_csv(name_outf)
+                        input_place, input_amount, input_approach, input_remark))
+                new_ledger.write_to_csv(name_csv)
                 break
             elif op == '2':
-                system.under_construction()
+                # append an expense to an existing .csv file
+                ledger_title = input("Enter the title for the ledger to open:")
+                name_csv = ledger_title + ".csv"
+                curr_ledger = Ledger(ledger_title)
+                curr_ledger.read_from_csv(name_csv)
+                curr_ledger.append_expense(Expense(input_date, input_title,
+                        input_place, input_amount, input_approach, input_remark))
+                curr_ledger.write_to_csv(name_csv)
+                break
             elif op == 'n':
                 user.op_branch()
                 break
@@ -124,11 +148,12 @@ class System:
         self.sys_active = 1
         self.time = str(datetime.datetime.now())
     def welcome(self):
-        print("Welcome to my_ledger", "Current Version: 0.3",
+        system.separation_line_1()
+        print("Welcome to my_ledger", "Current Version: 1.0",
               "Author: Qizheng Zhang", sep = '\n')
     def display_error(self,error_code):
+        system.separation_line_1()
         if error_code == 0: # invalid_input
-            system.separation_line_1()
             print("Invalid input. Please try again.")
     def under_construction(self):
         system.separation_line_1()
