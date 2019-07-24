@@ -27,17 +27,19 @@ class Ledger:
         self.title = Ledger_title
         self.num_expense = 0
         self.list_expense = []
+        self.total_expense_amount = 0.0
     def description(self):
         system.separation_line_1()
         print("Ledger Description")
         print("Title:", self.title)
         print("Num of expenses:", self.num_expense)
+        print("Money spent in total:", self.total_expense_amount)
         for single_expense in self.list_expense:
             single_expense.description()
-        system.separation_line_1()
     def append_expense(self, new_expense):
         self.list_expense.append(new_expense)
         self.num_expense += 1
+        self.total_expense_amount += float(new_expense.amount)
     def write_to_csv(self, name_csv):
         # write the info in the Ledger object into a .csv file
         with open(name_csv, mode='w') as ledger_csv:
@@ -82,12 +84,13 @@ class User:
             if op == '1':
                 user.add_expense_branch()
             elif op == '2':
-                system.under_construction()
-                continue
+                user.view_ledger()
             elif op == 'q':
                 system.terminate()
             else:
                 system.display_error(0)
+
+    # def_expense_branch starts
     def add_expense_branch(self):
         '''
         # default expense for testing
@@ -119,7 +122,7 @@ class User:
             if op == '1':
                 # create a new .csv file and write the expense & ledger
                 ledger_title = input("Enter the title for the ledger to create:")
-                name_csv = ledger_title + ".csv"
+                name_csv = ledger_title + '.csv'
                 new_ledger = Ledger(ledger_title)
                 new_ledger.append_expense(Expense(input_date, input_title,
                         input_place, input_amount, input_approach, input_remark))
@@ -143,13 +146,22 @@ class User:
             else:
                 system.display_error(0)
 
+    # view_ledger starts
+    def view_ledger(self):
+        system.separation_line_1()
+        ledger_title = input("Please enter the title of the ledger:")
+        name_csv = ledger_title + '.csv'
+        curr_ledger = Ledger(ledger_title)
+        curr_ledger.read_from_csv(name_csv)
+        curr_ledger.description()
+
 class System:
     def __init__(self):
         self.sys_active = 1
         self.time = str(datetime.datetime.now())
     def welcome(self):
         system.separation_line_1()
-        print("Welcome to my_ledger", "Current Version: 1.0",
+        print("Welcome to my_ledger", "Current Version: 1.2",
               "Author: Qizheng Zhang", sep = '\n')
     def display_error(self,error_code):
         system.separation_line_1()
