@@ -1,6 +1,9 @@
 # my_ledger Ver. 1.0    
 
 ## Introduction
+(this is a personal project for practicing object-oriented programming and defensive programming, and for author's
+practical needs to keep personal financial records)
+
 This is a basic ledger written with Python 3 that helps you with personal financial management. You may add your financial records to a new ledger or an existing ledger conveniently with just a few steps.   
 
 To run the program, type and run "python3 basic_ledger.py" in a terminal. A graphic user interface is currently under construction.   

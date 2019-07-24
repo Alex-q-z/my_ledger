@@ -3,6 +3,7 @@ import datetime
 import math
 import csv
 import sys
+import os
 
 class Expense:
     def __init__(self, expense_date, expense_title, expense_place,
@@ -75,8 +76,7 @@ class User:
         self.active_flag = 1
     def op_branch(self):
         # this might be modified using recursion
-        loop_flag = 1
-        while loop_flag:
+        while 1:
             system.separation_line_1()
             print("Please choose what you would like to do:",
                   "1: add an expense 2: view a ledger q: exit", sep = '\n')
@@ -111,8 +111,7 @@ class User:
         input_approach = input("Approach:")
         input_remark = input("Remark:")
 
-        loop_flag = 1
-        while(loop_flag):
+        while 1:
             system.separation_line_2()
             print("Where would you like to add the expense:",
                 "1: to a new ledger 2: to an existing ledger",
@@ -121,7 +120,12 @@ class User:
             op = input()
             if op == '1':
                 # create a new .csv file and write the expense & ledger
-                ledger_title = input("Enter the title for the ledger to create:")
+                print("Please enter the title of the ledger to create below.",
+                      "Note: you may go back to the main branch by entering exit().", sep = '\n')
+                ledger_title = input()
+                if ledger_title == "exit()":
+                    user.op_branch()
+                    break
                 name_csv = ledger_title + '.csv'
                 new_ledger = Ledger(ledger_title)
                 new_ledger.append_expense(Expense(input_date, input_title,
@@ -130,14 +134,26 @@ class User:
                 break
             elif op == '2':
                 # append an expense to an existing .csv file
-                ledger_title = input("Enter the title for the ledger to open:")
-                name_csv = ledger_title + ".csv"
-                curr_ledger = Ledger(ledger_title)
-                curr_ledger.read_from_csv(name_csv)
-                curr_ledger.append_expense(Expense(input_date, input_title,
-                        input_place, input_amount, input_approach, input_remark))
-                curr_ledger.write_to_csv(name_csv)
-                break
+                while 1:
+                    system.separation_line_1()
+                    print("Please enter the title of the ledger to open below.",
+                          "Note: you may go back to the main branch by entering exit().", sep = '\n')
+                    ledger_title = input()
+                    if ledger_title == "exit()":
+                        user.op_branch()
+                        break
+                    name_csv = ledger_title + ".csv"
+                    exist_flag = os.path.isfile(name_csv)
+                    if exist_flag:
+                        # continue only when the input ledger exists
+                        curr_ledger = Ledger(ledger_title)
+                        curr_ledger.read_from_csv(name_csv)
+                        curr_ledger.append_expense(Expense(input_date, input_title,
+                            input_place, input_amount, input_approach, input_remark))
+                        curr_ledger.write_to_csv(name_csv)
+                        break
+                    else:
+                        system.display_error(1)
             elif op == 'n':
                 user.op_branch()
                 break
@@ -148,12 +164,24 @@ class User:
 
     # view_ledger starts
     def view_ledger(self):
-        system.separation_line_1()
-        ledger_title = input("Please enter the title of the ledger:")
-        name_csv = ledger_title + '.csv'
-        curr_ledger = Ledger(ledger_title)
-        curr_ledger.read_from_csv(name_csv)
-        curr_ledger.description()
+        while 1:
+            system.separation_line_1()
+            print("Please enter the title of the ledger to view below.",
+                  "Note: you may go back to the main branch by entering exit().", sep = '\n')
+            ledger_title = input()
+            if ledger_title == "exit()":
+                user.op_branch()
+                break
+            name_csv = ledger_title + '.csv'
+            exist_flag = os.path.isfile(name_csv)
+            if exist_flag:
+                # continue only when the input ledger exists
+                curr_ledger = Ledger(ledger_title)
+                curr_ledger.read_from_csv(name_csv)
+                curr_ledger.description()
+                break
+            else:
+                system.display_error(1)
 
 class System:
     def __init__(self):
@@ -161,12 +189,14 @@ class System:
         self.time = str(datetime.datetime.now())
     def welcome(self):
         system.separation_line_1()
-        print("Welcome to my_ledger", "Current Version: 1.2",
+        print("Welcome to my_ledger", "Current Version: 1.3",
               "Author: Qizheng Zhang", sep = '\n')
     def display_error(self,error_code):
         system.separation_line_1()
         if error_code == 0: # invalid_input
-            print("Invalid input. Please try again.")
+            print("Invalid input: please try again.")
+        elif error_code == 1: #non-existing_ledger
+            print("The indicated ledger doesn't exist, please check again.")
     def under_construction(self):
         system.separation_line_1()
         print("this function is under construction")
@@ -187,7 +217,8 @@ def main():
     system.terminate()
     # end of main
 
-# Below for global contents
-system = System()
-user = User()
-main()
+if __name__== "__main__":
+    # Below for global contents
+    system = System()
+    user = User()
+    main()
