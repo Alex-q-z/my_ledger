@@ -191,7 +191,7 @@ class System:
         self.time = str(datetime.datetime.now())
     def welcome(self):
         system.separation_line_1()
-        print("Welcome to my_ledger", "Current Version: 1.3",
+        print("Welcome to my_ledger", "Current Version: 1.1",
               "Author: Qizheng Zhang", sep = '\n')
     def display_error(self,error_code):
         system.separation_line_1()
