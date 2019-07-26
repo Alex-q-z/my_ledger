@@ -22,6 +22,7 @@ class Expense:
         print("Place:", self.place)
         print("Amount:", self.amount)
         print("Approach:", self.approach)
+        print("Remark:", self.remark)
 
 class Ledger:
     def __init__(self, Ledger_title):
@@ -80,7 +81,7 @@ class User:
             system.separation_line_1()
             print("Please choose what you would like to do:",
                   "1: add an expense 2: view a ledger q: exit", sep = '\n')
-            op = input()
+            op = input().strip()
             if op == '1':
                 user.add_expense_branch()
             elif op == '2':
@@ -104,12 +105,12 @@ class User:
         '''
         system.separation_line_2()
         print("Enter info of the expense:")
-        input_date = input("Date:")
-        input_title = input("Title:")
-        input_place = input("Place:")
-        input_amount = input("Amount:")
-        input_approach = input("Approach:")
-        input_remark = input("Remark:")
+        input_date = input("Date:").strip()
+        input_title = input("Title:").strip()
+        input_place = input("Place:").strip()
+        input_amount = input("Amount:").strip()
+        input_approach = input("Approach:").strip()
+        input_remark = input("Remark:").strip()
 
         while 1:
             system.separation_line_2()
@@ -117,12 +118,12 @@ class User:
                 "1: to a new ledger 2: to an existing ledger",
                 "n: I don't want to add an expense",
                 "q: give up and quit whole program", sep = '\n')
-            op = input()
+            op = input().strip()
             if op == '1':
                 # create a new .csv file and write the expense & ledger
                 print("Please enter the title of the ledger to create below.",
                       "Note: you may go back to the main branch by entering exit().", sep = '\n')
-                ledger_title = input()
+                ledger_title = input().strip()
                 if ledger_title == "exit()":
                     user.op_branch()
                     break
@@ -138,7 +139,7 @@ class User:
                     system.separation_line_1()
                     print("Please enter the title of the ledger to open below.",
                           "Note: you may go back to the main branch by entering exit().", sep = '\n')
-                    ledger_title = input()
+                    ledger_title = input().strip()
                     if ledger_title == "exit()":
                         user.op_branch()
                         break
@@ -154,6 +155,7 @@ class User:
                         break
                     else:
                         system.display_error(1)
+                break
             elif op == 'n':
                 user.op_branch()
                 break
@@ -168,7 +170,7 @@ class User:
             system.separation_line_1()
             print("Please enter the title of the ledger to view below.",
                   "Note: you may go back to the main branch by entering exit().", sep = '\n')
-            ledger_title = input()
+            ledger_title = input().strip()
             if ledger_title == "exit()":
                 user.op_branch()
                 break
