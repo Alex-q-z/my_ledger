@@ -1,4 +1,4 @@
-# my_ledger Ver. 1.1    
+# my_ledger Ver. 1.2    
 
 ## Introduction
 (this is a **personal project** for practicing object-oriented programming and defensive programming, and for author's
@@ -16,6 +16,10 @@ This is a basic ledger written with Python 3 that **helps you with personal fina
 2019/07/25 (Ver. 1.1):
 1. basic defensive programming completed; now simple typing errors would not cause the whole program to crash
 2. users may choose to view the specific contents of a ledger, by typing '2' in the main branch
+
+2019/07/29 (Ver. 1.2):
+1. now records & inputs of incomes are supported; net spending will be calculated
+2. bugs fixed
 
 ## Future work
 **Functionalities incoming:** data analysis & visualization, GUI, encrypted ledgers, redirection when viewing ledgers
